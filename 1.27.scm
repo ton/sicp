@@ -1,0 +1,40 @@
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (define (next n)
+    (if (= n 2) 3 (+ n 2)))
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        (else (find-divisor n (next test-divisor)))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (expmod base e m)
+  (cond ((= e 0) 1)
+        ((even? e)
+         (remainder (square (expmod base (/ e 2) m)) m))
+        (else
+         (remainder (* base (expmod base (- e 1) m)) m))))
+
+(define (carmichael? n)
+  (define (iter i n)
+    (if (< i n)
+        (if (= (expmod i n n) i)
+            (iter (+ i 1) n)
+            #f)
+        (not (prime? n))))
+  (iter 0 n))
+
+(define (print-carmichael first last)
+  (define is-carmichael (carmichael? first))
+  (if (< first last)
+      (if is-carmichael (newline)))
+  (if (< first last)
+      (if is-carmichael (display first)))
+  (if (< first last)
+      (print-carmichael (+ first 1) last)))

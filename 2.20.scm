@@ -1,0 +1,12 @@
+(define (parity n)
+  (remainder n 2))
+
+(define (same-parity x . numbers)
+  (define (same-parity-iter x-parity numbers)
+    (if (null? numbers)
+        '()
+        (let ((n (car numbers)))
+          (if (= (parity n) x-parity)
+              (cons n (same-parity-iter x-parity (cdr numbers)))
+              (same-parity-iter x-parity (cdr numbers))))))
+  (cons x (same-parity-iter (parity x) numbers)))
